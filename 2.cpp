@@ -1,54 +1,75 @@
 #include <iostream>
-#include <vector>
 
 using namespace std;
 
 
-vector<vector<int>> transpose(const vector<vector<int>>& matrix) {
-    int rows = matrix.size();
-    int cols = matrix[0].size();
-    
-    
-    vector<vector<int>> transposed_matrix(cols, vector<int>(rows));
+int* create_matrix(int rows, int cols) {
+    return new int[rows * cols];
+}
 
-   
+
+int get_element(int* matrix, int rows, int cols, int i, int j) {
+    return matrix[i * cols + j];
+}
+
+
+void set_element(int* matrix, int rows, int cols, int i, int j, int value) {
+    matrix[i * cols + j] = value;
+}
+
+
+int* transpose_matrix(int* matrix, int rows, int cols) {
+    int* transposed_matrix = create_matrix(cols, rows);
+    
     for (int i = 0; i < rows; ++i) {
         for (int j = 0; j < cols; ++j) {
-            transposed_matrix[j][i] = matrix[i][j];
+            set_element(transposed_matrix, cols, rows, j, i, get_element(matrix, rows, cols, i, j));
         }
     }
-    
+
     return transposed_matrix;
 }
 
 
-void print_matrix(const vector<vector<int>>& matrix) {
-    for (const auto& row : matrix) {
-        for (int elem : row) {
-            cout << elem << " ";
+void print_matrix(int* matrix, int rows, int cols) {
+    for (int i = 0; i < rows; ++i) {
+        for (int j = 0; j < cols; ++j) {
+            cout << get_element(matrix, rows, cols, i, j) << " ";
         }
         cout << endl;
     }
 }
 
+
+void delete_matrix(int* matrix) {
+    delete[] matrix;
+}
+
 int main() {
-
-    vector<vector<int>> matrix = {
-        {1, 2, 3},
-        {4, 5, 6},
-        {7, 8, 9}
-    };
-
-    
-    cout << "Original Matrix:" << endl;
-    print_matrix(matrix);
-
-    
-    vector<vector<int>> transposed_matrix = transpose(matrix);
+    int rows = 3;
+    int cols = 4;
 
   
-    cout << "Transposed Matrix:" << endl;
-    print_matrix(transposed_matrix);
+    int* matrix = create_matrix(rows, cols);
+    int value = 1;
+    for (int i = 0; i < rows; ++i) {
+        for (int j = 0; j < cols; ++j) {
+            set_element(matrix, rows, cols, i, j, value++);
+        }
+    }
+
+    cout << "Original matrix:" << endl;
+    print_matrix(matrix, rows, cols);
+
+    
+    int* transposed_matrix = transpose_matrix(matrix, rows, cols);
+
+    cout << "Transported matrix:" << endl;
+    print_matrix(transposed_matrix, cols, rows);
+
+
+    delete_matrix(matrix);
+    delete_matrix(transposed_matrix);
 
     return 0;
 }
